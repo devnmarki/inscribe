@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProfileImage from "/images/proffesional_man_colorful.jpg";
 import { getLoggedInUser, logOutUser } from "../../data/user.data";
-import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 type ProfileType = {
     className?: string
 }

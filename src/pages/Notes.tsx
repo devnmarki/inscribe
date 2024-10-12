@@ -1,22 +1,21 @@
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { logOutUser } from "../data/user.data";
+import { useEffect } from "react";
 
 import NavigationBar from "../components/sections/NavigationBar";
-import { useEffect } from "react";
+import Sidebar from "../components/sections/Sidebar";
+import { setBackgroundColor } from "../globals";
 
 const Notes = () => {
     
     useEffect(() => {
-        document.body.style.backgroundColor = "#f5f5f5";
-
-        return () => {
-            document.body.style.backgroundColor = "";
-        };
+        setBackgroundColor();
     }, [])
     
     return (
         <>
             <NavigationBar />
+            <main className="notes-main w-full flex">
+                <Sidebar />
+            </main>
         </>
     )
 }
