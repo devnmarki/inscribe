@@ -5,7 +5,7 @@ import validator from "validator";
 const userSchema = mongoose.Schema ({
     name: {
         type: String,
-        required: true,
+        required: [true, "Please enter a name"]
     },
     email: {
         type: String,
@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema ({
     password: {
         type: String,
         required: [true, "Please enter a password"],
-        minlength: [8, "Password must be at least 8 characters long"]
+        minlength: [8, "Password must be at least 8 characters"]
     },
     profile_image: {
         type: String

@@ -2,7 +2,22 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 const handleErrors = (err) => {
-    console.log(err.message, err.code);
+    let errors = { name: '', email: '', password: '' };
+
+    if (err.code === 11000) {
+        errors.email = 'Email is already registered';
+        return errors;
+    }
+
+    if (err.message.includes('User validation failed')) {
+        Object.values(err.errors).forEach(({ properties }) => {
+            if (properties && properties.path && errors[properties.path] !== undefined) {
+                errors[properties.path] = properties.message;
+            }
+        });
+    }
+
+    return errors;
 }
 
 const maxAge = 3 * 24 * 60 * 60;
@@ -22,10 +37,28 @@ export const signup = async (req, res) => {
         res.status(201).json({ user: user._id });
     } catch (e) {
         console.error(e);
-        handleErrors(e);
-        res.status(400).send("error, user not created");
+        const errors = handleErrors(e);
+        res.status(400).json({ errors });
     }
 } 
+
+export const requireAuth = (req, res, next) => {
+    const token = req.cookies.jwt; // Access the cookie containing the JWT
+
+    if (token) {
+        jwt.verify(token, 'net ninja secret', (err, decodedToken) => {
+            if (err) {
+                console.error(err);
+                res.status(401).json({ error: 'Unauthorized' });
+            } else {
+                req.user = decodedToken; // Attach decoded user information to the request
+                next(); // Proceed to the next middleware or route handler
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+};
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -39,6 +72,20 @@ export const login = async (req, res) => {
     }
 }
 
+export const getUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id); // Use the user ID from the decoded token
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
 export const logout = async (req, res) => {
     res.cookie('jwt', '', { maxAge: 1 });
+    res.status(200).json({ message: 'Logged out successfully' });
 }
