@@ -1,7 +1,9 @@
+import { useState } from "react";
+
 type SidebarItemType = {
-  iconBlack: string;
-  iconWhite: string;
-  name: string;
+  iconBlack?: string;
+  iconWhite?: string;
+  name?: string;
 };
 
 const SidebarItem = (props: SidebarItemType) => {
