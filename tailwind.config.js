@@ -11,9 +11,13 @@ export default {
         470: "470px",
         310: "310px",
         228: "228px",
-        176: "176px"
+        176: "176px",
+        155: "155px",
+        50: "50px"
       },
       height: {
+        100: "100px",
+        80: "80px",
         50: "50px",
         38: "38px"
       },
@@ -22,7 +26,8 @@ export default {
           1: "#333333"
         },
         gray: {
-          1: "#C5CCDB"
+          1: "#C5CCDB",
+          2: "#F5F5F5"
         },
         white: {
           1: "#FFFFFF"
@@ -32,14 +37,23 @@ export default {
         10: "10px",
         15: "15px",
         20: "20px",
-        30: "30px"
+        30: "30px",
+        33: "33px"
       },
       gap: {
+        3: "3px",
         5: "5px",
         10: "10px",
         15: "15px",
         20: "20px",
         30: "30px"
+      },
+      borderRadius: {
+        5: "5px"
+      },
+      fontSize: {
+        20: "20px",
+        16: "16px"
       }
     },
   },

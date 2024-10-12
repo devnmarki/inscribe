@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { handleLoggedInUser } from "../data/user.data";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 

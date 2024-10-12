@@ -1,17 +1,22 @@
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { logOutUser } from "../data/user.data";
 
+import NavigationBar from "../components/sections/NavigationBar";
+import { useEffect } from "react";
+
 const Notes = () => {
     
-    const navigate: NavigateFunction = useNavigate();
+    useEffect(() => {
+        document.body.style.backgroundColor = "#f5f5f5";
 
-    const handleLogOutUser = async () => {
-        await logOutUser(navigate);
-    }
+        return () => {
+            document.body.style.backgroundColor = "";
+        };
+    }, [])
     
     return (
         <>
-            <button onClick={handleLogOutUser}>Logout</button>
+            <NavigationBar />
         </>
     )
 }

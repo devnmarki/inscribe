@@ -27,18 +27,6 @@ export const getUser = async (req, res) => {
     }
 }
 
-export const createUser = async (req, res) => {
-    const user = new User(req.body);
-
-    try {
-        await user.save();
-        res.status(201).json({ message: "User created successfully!", data: user });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ message: "Error in post user!" });
-    }
-}
-
 export const updateUser = async (req, res) => {
     const { user_id } = req.params;
 
