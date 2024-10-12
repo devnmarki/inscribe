@@ -22,7 +22,7 @@ const handleErrors = (err) => {
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-    return jwt.sign({ id }, 'net ninja secret', {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: maxAge
     });
 };
@@ -46,7 +46,7 @@ export const requireAuth = (req, res, next) => {
     const token = req.cookies.jwt; // Access the cookie containing the JWT
 
     if (token) {
-        jwt.verify(token, 'net ninja secret', (err, decodedToken) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if (err) {
                 console.error(err);
                 res.status(401).json({ error: 'Unauthorized' });
