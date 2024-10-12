@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import NavigationBar from "../components/sections/NavigationBar";
-import Sidebar from "../components/sections/Sidebar";
+import Sidebar from "../components/sections/sidebar/Sidebar";
 import { setBackgroundColor } from "../globals";
 
 const Notes = () => {

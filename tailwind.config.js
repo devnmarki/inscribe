@@ -20,7 +20,8 @@ export default {
         100: "100px",
         80: "80px",
         50: "50px",
-        38: "38px"
+        38: "38px",
+        35: "35px"
       },
       colors: {
         black: {
