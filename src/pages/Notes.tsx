@@ -1,69 +1,49 @@
 import { FormEvent, useEffect, useState } from "react";
-
 import NavigationBar from "../components/sections/NavigationBar";
 import Sidebar from "../components/sections/sidebar/Sidebar";
 import Fade from "../components/ui/Fade";
 import Modal from "../components/Modal";
 import CustomInput from "../components/ui/CustomInput";
-
 import { setBackgroundColor } from "../globals";
 import {
   createFolder,
   FolderType,
-  getFolders,
   getFoldersOfLoggedInUser,
 } from "../data/folder.data";
 import { getLoggedInUser } from "../data/user.data";
 import SidebarFolder from "../components/sections/sidebar/SidebarFolder";
 
-const icons: any = {
-  createFolderIconBlack: "/icons/create_folder_icon.svg",
-  createFolderIconWhite: "/icons/create_folder_white_icon.svg",
-  closeIcon: "/icons/close_menu_icon.svg",
-};
-
-const modalsStatesConfig = {
-  createFolderPopup: false,
-  fade: false,
-};
-
 const Notes = () => {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(false);
-  const [modalState, setModalState] = useState<any>({ modalsStatesConfig });
-
-  const [sidebarFolders, setSidebarFolders] = useState<any[]>([]);
+  const [modalState, setModalState] = useState<any>({
+    createFolderPopup: false,
+    fade: false,
+  });
+  const [sidebarFolders, setSidebarFolders] = useState<FolderType[]>([]);
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
 
   useEffect(() => {
     setBackgroundColor();
+    loadFolders();
   }, []);
 
   const loadFolders = async () => {
     try {
       const data = await getFoldersOfLoggedInUser();
-
-      const folderComponents = data.map((folder: FolderType) => (
-        <SidebarFolder key={folder._id} name={folder.name} />
-      ));
-      setSidebarFolders(folderComponents);
+      setSidebarFolders(data);
     } catch (e) {
       console.error(e);
     }
   };
 
   const closeAll = () => {
-    setModalState((prevState: any) => {
-      const newState = Object.keys(prevState).reduce(
-        (acc, key) => {
-          acc[key] = false;
-          return acc;
-        },
-        {} as Record<string, boolean>,
-      );
-
-      return newState;
-    });
+    setModalState((prevState: any) => ({
+      ...prevState,
+      createFolderPopup: false,
+      fade: false,
+    }));
   };
 
   const createNewFolder = async (e: FormEvent) => {
@@ -73,29 +53,25 @@ const Notes = () => {
 
     if (newFolderName.length === 0) {
       setNewFolderNameError("Please enter a folder name");
+      return;
     }
 
-    if (newFolderNameError === "") {
-      const loggedInUser = await getLoggedInUser();
-      if (!loggedInUser) return;
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return;
 
-      let data = {
-        user_id: loggedInUser._id,
-        name: newFolderName,
-      };
+    const data = {
+      user_id: loggedInUser._id,
+      name: newFolderName,
+    };
 
-      await createFolder(loggedInUser?._id, data);
-
-      await loadFolders();
-
-      closeAll();
-    }
+    await createFolder(loggedInUser._id, data);
+    await loadFolders();
+    closeAll();
   };
 
   return (
     <>
       {modalState.fade && <Fade />}
-
       {modalState.createFolderPopup && (
         <Modal>
           <div className="flex justify-center items-center w-full h-full">
@@ -105,7 +81,7 @@ const Notes = () => {
                   Create New Folder
                 </p>
                 <img
-                  src={icons.closeIcon}
+                  src="/icons/close_menu_icon.svg"
                   alt="Close Icon"
                   className="w-24 cursor-pointer"
                   onClick={closeAll}
@@ -113,7 +89,7 @@ const Notes = () => {
               </div>
               <form
                 className="flex flex-col gap-y-25"
-                onSubmit={async (e) => await createNewFolder(e)}
+                onSubmit={createNewFolder}
               >
                 <CustomInput
                   type="text"
@@ -141,7 +117,16 @@ const Notes = () => {
           setToggleSidebar={setToggleSidebar}
           setShowFade={setModalState}
           loadFolders={loadFolders}
-          sidebarFolders={sidebarFolders}
+          sidebarFolders={sidebarFolders.map((folder) => (
+            <SidebarFolder
+              key={folder._id}
+              id={folder._id}
+              userId={folder.user_id}
+              name={folder.name}
+              setSelectedFolder={setSelectedFolder}
+              selectedFolder={selectedFolder}
+            />
+          ))}
         >
           <button
             className="group flex justify-center items-center gap-x-10 w-full h-38 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0"
@@ -155,12 +140,12 @@ const Notes = () => {
             }}
           >
             <img
-              src={icons.createFolderIconBlack}
+              src="/icons/create_folder_icon.svg"
               alt="Black Icon"
               className="block group-hover:hidden"
             />
             <img
-              src={icons.createFolderIconWhite}
+              src="/icons/create_folder_white_icon.svg"
               alt="White Icon"
               className="hidden group-hover:block"
             />
