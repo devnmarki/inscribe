@@ -2,7 +2,9 @@ import SidebarItem from "./SidebarItem";
 import SidebarDropdown from "./SidebarDropdown";
 import Profile from "../Profile";
 import SidebarFolder from "./SidebarFolder";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FolderType, getFolders } from "../../../data/folder.data";
+import { getLoggedInUser } from "../../../data/user.data";
 
 const icons: any = {
   archiveIconBlack: "/icons/archive_icon.svg",
@@ -19,10 +21,35 @@ type SidebarType = {
 };
 
 const Sidebar = (props: SidebarType) => {
+  const [sidebarFolders, setSidebarFolders] = useState<any[]>([]);
+  const [foldersLoading, setFoldersLoading] = useState<boolean>(true);
+
   const handleSidebarToggle = () => {
     props.setToggleSidebar(false);
     props.setShowFade(false);
   };
+
+  const loadFolders = async () => {
+    try {
+      const loggedInUser = await getLoggedInUser();
+      if (!loggedInUser) return;
+
+      const data = await getFolders(loggedInUser._id);
+
+      const folderComponents = data.map((folder: FolderType) => (
+        <SidebarFolder key={folder._id} name={folder.name} />
+      ));
+      setSidebarFolders(folderComponents);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFoldersLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    loadFolders();
+  }, []);
 
   return (
     <aside
@@ -42,13 +69,12 @@ const Sidebar = (props: SidebarType) => {
           iconWhite={icons.archiveIconWhite}
           name="Archive"
         />
-
         <SidebarDropdown
           iconBlack={icons.dropdownIconBlack}
           iconWhite={icons.dropdownIconWhite}
           name="Folders"
+          items={sidebarFolders}
         />
-        <SidebarFolder name="Not Cool" />
       </div>
     </aside>
   );
