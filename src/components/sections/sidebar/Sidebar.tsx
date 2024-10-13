@@ -26,7 +26,10 @@ const Sidebar = (props: SidebarType) => {
 
   const handleSidebarToggle = () => {
     props.setToggleSidebar(false);
-    props.setShowFade(false);
+    props.setShowFade((prevStates: any) => ({
+      ...prevStates,
+      showFade: false,
+    }));
   };
 
   const loadFolders = async () => {

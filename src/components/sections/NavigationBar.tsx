@@ -10,7 +10,10 @@ type NavigationBarType = {
 const NavigationBar = (props: NavigationBarType) => {
   const handleSidebarToggle = () => {
     props.setToggleSidebar(true);
-    props.setShowFade(true);
+    props.setShowFade((prevStates: any) => ({
+      ...prevStates,
+      showFade: true,
+    }));
   };
 
   return (
