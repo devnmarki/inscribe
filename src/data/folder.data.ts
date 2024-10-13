@@ -1,4 +1,5 @@
 import { API_URL_BASE } from "../globals";
+import { getLoggedInUser } from "./user.data";
 
 export type FolderType = {
   _id?: string;
@@ -12,6 +13,27 @@ export const getFolders = async (userId: string) => {
 
     if (!response.ok) {
       throw new Error("Failed to get folder from user: " + userId);
+    }
+
+    let result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const getFoldersOfLoggedInUser = async () => {
+  try {
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return;
+
+    const response = await fetch(
+      `${API_URL_BASE}/users/${loggedInUser._id}/folders`,
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to get folder from logged in user.");
     }
 
     let result = await response.json();

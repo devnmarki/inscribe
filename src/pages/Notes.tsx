@@ -7,7 +7,12 @@ import Modal from "../components/Modal";
 import CustomInput from "../components/ui/CustomInput";
 
 import { setBackgroundColor } from "../globals";
-import { createFolder, FolderType, getFolders } from "../data/folder.data";
+import {
+  createFolder,
+  FolderType,
+  getFolders,
+  getFoldersOfLoggedInUser,
+} from "../data/folder.data";
 import { getLoggedInUser } from "../data/user.data";
 import SidebarFolder from "../components/sections/sidebar/SidebarFolder";
 
@@ -36,10 +41,7 @@ const Notes = () => {
 
   const loadFolders = async () => {
     try {
-      const loggedInUser = await getLoggedInUser();
-      if (!loggedInUser) return;
-
-      const data = await getFolders(loggedInUser._id);
+      const data = await getFoldersOfLoggedInUser();
 
       const folderComponents = data.map((folder: FolderType) => (
         <SidebarFolder key={folder._id} name={folder.name} />
