@@ -1,9 +1,9 @@
 import { API_URL_BASE } from "../globals";
 
 export type FolderType = {
-  _id: string;
-  user_id: string;
-  name: string;
+  _id?: string;
+  user_id?: string;
+  name?: string;
 };
 
 export const getFolders = async (userId: string) => {
@@ -53,6 +53,8 @@ export const createFolder = async (userId: string, data: FolderType) => {
     }
 
     let result = await response.json();
+
+    console.log("Folder created successfully!");
 
     return result;
   } catch (e) {

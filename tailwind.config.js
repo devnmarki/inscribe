@@ -8,10 +8,12 @@ export default {
         470: "470px",
         310: "310px",
         288: "288px",
+        280: "280px",
         228: "228px",
         176: "176px",
         155: "155px",
         50: "50px",
+        24: "24px",
       },
       height: {
         100: "100px",
@@ -46,7 +48,11 @@ export default {
         10: "10px",
         15: "15px",
         20: "20px",
+        25: "25px",
         30: "30px",
+      },
+      borderWidth: {
+        1: "1px",
       },
       borderRadius: {
         5: "5px",
