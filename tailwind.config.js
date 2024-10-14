@@ -14,6 +14,7 @@ export default {
         155: "155px",
         50: "50px",
         24: "24px",
+        "45c": "45ch",
       },
       height: {
         100: "100px",
@@ -32,6 +33,9 @@ export default {
         },
         white: {
           1: "#FFFFFF",
+        },
+        red: {
+          1: "#F93737",
         },
       },
       padding: {

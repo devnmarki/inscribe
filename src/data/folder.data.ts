@@ -83,3 +83,46 @@ export const createFolder = async (userId: string, data: FolderType) => {
     console.error(e);
   }
 };
+
+export const updateFolder = async (folderId: string, newData: FolderType) => {
+  try {
+    const response = await fetch(`${API_URL_BASE}/folders/${folderId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update folder: " + folderId);
+    }
+
+    let result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const deleteFolder = async (folderId: string) => {
+  try {
+    const response = await fetch(`${API_URL_BASE}/folders/${folderId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete folder: " + folderId);
+    }
+
+    let result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
