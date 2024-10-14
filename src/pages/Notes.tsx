@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-
+import { setBackgroundColor } from "../globals";
 import {
   createFolder,
   FolderType,
@@ -7,8 +7,6 @@ import {
 } from "../data/folder.data";
 
 import { getLoggedInUser } from "../data/user.data";
-import { setBackgroundColor } from "../globals";
-
 import {
   CustomInput,
   Fade,
@@ -25,9 +23,11 @@ const Notes = () => {
     fade: false,
   });
   const [sidebarFolders, setSidebarFolders] = useState<FolderType[]>([]);
+
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
-  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
 
   useEffect(() => {
     setBackgroundColor();
@@ -38,6 +38,14 @@ const Notes = () => {
     try {
       const data = await getFoldersOfLoggedInUser();
       setSidebarFolders(data);
+
+      if (data[0]) {
+        setSelectedFolder({
+          _id: data[0]?._id,
+          user_id: data[0]?.user_id,
+          name: data[0]?.name,
+        });
+      }
     } catch (e) {
       console.error(e);
     }

@@ -11,3 +11,4 @@ export { default as SidebarDropdown } from "./components/sections/sidebar/Sideba
 export { default as CustomInput } from "./components/ui/CustomInput";
 export { default as Fade } from "./components/ui/Fade";
 export { default as Profile } from "./components/ui/Profile";
+export { default as EditableTextField } from "./components/ui/EditableTextField";
