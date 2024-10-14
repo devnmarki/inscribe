@@ -1,6 +1,6 @@
 import SidebarItem from "./SidebarItem";
 import SidebarDropdown from "./SidebarDropdown";
-import Profile from "../Profile";
+import Profile from "../../ui/Profile";
 import { useEffect } from "react";
 
 const icons: any = {

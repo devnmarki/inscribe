@@ -1,17 +1,22 @@
 import { FormEvent, useEffect, useState } from "react";
-import NavigationBar from "../components/sections/NavigationBar";
-import Sidebar from "../components/sections/sidebar/Sidebar";
-import Fade from "../components/ui/Fade";
-import Modal from "../components/Modal";
-import CustomInput from "../components/ui/CustomInput";
-import { setBackgroundColor } from "../globals";
+
 import {
   createFolder,
   FolderType,
   getFoldersOfLoggedInUser,
 } from "../data/folder.data";
+
 import { getLoggedInUser } from "../data/user.data";
-import SidebarFolder from "../components/sections/sidebar/SidebarFolder";
+import { setBackgroundColor } from "../globals";
+
+import {
+  CustomInput,
+  Fade,
+  Modal,
+  NavigationBar,
+  Sidebar,
+  SidebarFolder,
+} from "..";
 
 const Notes = () => {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(false);
@@ -37,6 +42,16 @@ const Notes = () => {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (sidebarFolders.length > 0) {
+      setSelectedFolder({
+        _id: sidebarFolders[0]._id,
+        user_id: sidebarFolders[0].user_id,
+        name: sidebarFolders[0].name,
+      });
+    }
+  }, [sidebarFolders]);
 
   const closeAll = () => {
     setModalState((prevState: any) => ({

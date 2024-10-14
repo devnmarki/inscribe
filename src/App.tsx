@@ -1,9 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Notes from "./pages/Notes";
+import { Home, Login, Notes, Register } from ".";
 
 const App = () => {
   return (
@@ -15,7 +12,7 @@ const App = () => {
         <Route path="/notes" element={<Notes />}></Route>
       </Routes>
     </Router>
-  )
-}
+  );
+};
 
 export default App;
