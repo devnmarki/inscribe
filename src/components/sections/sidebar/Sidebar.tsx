@@ -1,7 +1,5 @@
-import SidebarItem from "./SidebarItem";
-import SidebarDropdown from "./SidebarDropdown";
-import Profile from "../Profile";
 import { useEffect } from "react";
+import { Profile, SidebarDropdown, SidebarItem } from "../../..";
 
 const icons: any = {
   archiveIconBlack: "/icons/archive_icon.svg",

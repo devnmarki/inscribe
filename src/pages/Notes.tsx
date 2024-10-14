@@ -1,9 +1,4 @@
 import { FormEvent, useEffect, useState } from "react";
-import NavigationBar from "../components/sections/NavigationBar";
-import Sidebar from "../components/sections/sidebar/Sidebar";
-import Fade from "../components/ui/Fade";
-import Modal from "../components/Modal";
-import CustomInput from "../components/ui/CustomInput";
 import { setBackgroundColor } from "../globals";
 import {
   createFolder,
@@ -11,7 +6,14 @@ import {
   getFoldersOfLoggedInUser,
 } from "../data/folder.data";
 import { getLoggedInUser } from "../data/user.data";
-import SidebarFolder from "../components/sections/sidebar/SidebarFolder";
+import {
+  CustomInput,
+  Fade,
+  Modal,
+  NavigationBar,
+  Sidebar,
+  SidebarFolder,
+} from "..";
 
 const Notes = () => {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(false);
@@ -20,9 +22,11 @@ const Notes = () => {
     fade: false,
   });
   const [sidebarFolders, setSidebarFolders] = useState<FolderType[]>([]);
+
+  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
+
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
-  const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
 
   useEffect(() => {
     setBackgroundColor();
@@ -33,6 +37,14 @@ const Notes = () => {
     try {
       const data = await getFoldersOfLoggedInUser();
       setSidebarFolders(data);
+
+      if (data[0]) {
+        setSelectedFolder({
+          _id: data[0]?._id,
+          user_id: data[0]?.user_id,
+          name: data[0]?.name,
+        });
+      }
     } catch (e) {
       console.error(e);
     }
