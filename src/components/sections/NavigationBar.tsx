@@ -1,7 +1,7 @@
 import MenuIcon from "/icons/menu_icon.svg";
 import Logo from "/images/logo.svg";
 
-import Profile from "./Profile";
+import Profile from "../ui/Profile";
 type NavigationBarType = {
   setShowFade?: any;
   setToggleSidebar?: any;
