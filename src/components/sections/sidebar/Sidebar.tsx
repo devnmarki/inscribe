@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-=======
-import SidebarItem from "./SidebarItem";
-import SidebarDropdown from "./SidebarDropdown";
-import Profile from "../../ui/Profile";
->>>>>>> main
 import { useEffect } from "react";
 import { Profile, SidebarDropdown, SidebarItem } from "../../..";
 

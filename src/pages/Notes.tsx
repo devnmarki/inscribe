@@ -1,9 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-<<<<<<< HEAD
 import { setBackgroundColor } from "../globals";
-=======
-
->>>>>>> main
 import {
   createFolder,
   FolderType,
@@ -11,11 +7,6 @@ import {
 } from "../data/folder.data";
 
 import { getLoggedInUser } from "../data/user.data";
-<<<<<<< HEAD
-=======
-import { setBackgroundColor } from "../globals";
-
->>>>>>> main
 import {
   CustomInput,
   Fade,
