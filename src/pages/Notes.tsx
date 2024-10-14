@@ -1,11 +1,21 @@
 import { FormEvent, useEffect, useState } from "react";
+<<<<<<< HEAD
 import { setBackgroundColor } from "../globals";
+=======
+
+>>>>>>> main
 import {
   createFolder,
   FolderType,
   getFoldersOfLoggedInUser,
 } from "../data/folder.data";
+
 import { getLoggedInUser } from "../data/user.data";
+<<<<<<< HEAD
+=======
+import { setBackgroundColor } from "../globals";
+
+>>>>>>> main
 import {
   CustomInput,
   Fade,
@@ -49,6 +59,16 @@ const Notes = () => {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (sidebarFolders.length > 0) {
+      setSelectedFolder({
+        _id: sidebarFolders[0]._id,
+        user_id: sidebarFolders[0].user_id,
+        name: sidebarFolders[0].name,
+      });
+    }
+  }, [sidebarFolders]);
 
   const closeAll = () => {
     setModalState((prevState: any) => ({
