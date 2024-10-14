@@ -33,17 +33,17 @@ const Sidebar = (props: SidebarType) => {
 
   return (
     <aside
-      className={`flex flex-col justify-between w-288 h-full p-30 bg-white-1 border-r border-r-gray-1 transition-transform max-md:absolute max-md:top-0 max-md:left-0 max-md:z-40 ${props.toggleSidebar ? "" : "max-md:-translate-x-full"}`}
+      className={`flex flex-col justify-between flex-shrink-0 w-288 h-full p-30 bg-white-1 border-r border-r-gray-1 transition-transform max-lg:absolute max-lg:top-0 max-lg:left-0 max-lg:z-40 ${props.toggleSidebar ? "" : "max-lg:-translate-x-full"}`}
     >
       <div className="flex flex-col gap-y-30">
-        <div className="flex justify-end items-center w-full cursor-pointer md:hidden">
+        <div className="flex justify-end items-center w-full cursor-pointer lg:hidden">
           <img
             src={icons.closeMenuIcon}
             alt="Close Menu Icon"
             onClick={handleSidebarToggle}
           />
         </div>
-        <Profile className="md:hidden" />
+        <Profile className="lg:hidden" />
         <div className="flex flex-col gap-y-10">
           <SidebarItem
             iconBlack={icons.archiveIconBlack}

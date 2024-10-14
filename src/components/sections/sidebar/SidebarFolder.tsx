@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import FolderIconBlack from "/icons/folder_icon.svg";
 import FolderIconWhite from "/icons/folder_white_icon.svg";
-import { FolderType } from "../../../data/folder.data";
+import { FolderType, updateFolder } from "../../../data/folder.data";
 import { EditableTextField } from "../../..";
 
 type SidebarFolderType = {
@@ -23,8 +23,6 @@ const SidebarFolder = (props: SidebarFolderType) => {
 
   const isSelected = props.selectedFolder?._id === props.id;
 
-  const updateFolderName = async () => {};
-
   return (
     <div
       className={`${
@@ -45,7 +43,7 @@ const SidebarFolder = (props: SidebarFolderType) => {
       <EditableTextField
         initialText={props.name}
         isSelected={isSelected}
-        onEnterKey={async () => await updateFolderName()}
+        folderId={props.id}
       />
     </div>
   );

@@ -1,24 +1,31 @@
 import { KeyboardEvent, useState } from "react";
+import { updateFolder } from "../../data/folder.data";
 
 type EditableTextFieldType = {
   initialText?: string;
   isSelected?: boolean;
-  onEnterKey?: any;
+  folderId?: string;
 };
 
 const EditableTextField = ({
   initialText = "",
   isSelected = false,
-  onEnterKey,
+  folderId,
 }: EditableTextFieldType) => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [newText, setNewText] = useState<string>(initialText);
   const [prevText, setPrevText] = useState<string>(initialText);
 
+  const updateFolderName = async () => {
+    if (!folderId) return;
+    await updateFolder(folderId, { name: newText });
+  };
+
   const handleBlur = async () => {
     setEditMode(false);
     if (newText.length !== 0) {
       setPrevText(newText);
+      await updateFolderName();
     } else {
       setNewText(prevText);
     }
@@ -29,7 +36,7 @@ const EditableTextField = ({
       setEditMode(false);
       if (newText.length !== 0) {
         setPrevText(newText);
-        onEnterKey();
+        await updateFolderName();
       } else {
         setNewText(prevText);
       }
@@ -53,7 +60,7 @@ const EditableTextField = ({
         />
       ) : (
         <span
-          className={`group-hover:text-white-1 ${isSelected ? "text-white-1" : "text-black-1"}`}
+          className={`edited-text group-hover:text-white-1 ${isSelected ? "text-white-1" : "text-black-1"}`}
           onDoubleClick={() => setEditMode(true)}
         >
           {newText}
