@@ -7,6 +7,7 @@ import cors from "cors";
 import usersRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import folderRoutes from "./routes/folder.route.js";
+import noteRoutes from "./routes/note.route.js";
 
 dotenv.config();
 
@@ -27,5 +28,6 @@ mongoose
 app.use("/api", authRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", folderRoutes);
+app.use("/api", noteRoutes);
 
 app.listen(process.env.PORT);

@@ -15,7 +15,9 @@ import {
   NavigationBar,
   Sidebar,
   SidebarFolder,
+  Note,
 } from "..";
+import { getNotesOfSelectedFolder, NoteType } from "../data/note.data";
 
 const icons = {
   trashIconRed: "/icons/trash_red_icon.svg",
@@ -39,6 +41,8 @@ const Notes = () => {
 
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
+
+  const [notes, setNotes] = useState<NoteType[] | undefined>([]);
 
   useEffect(() => {
     setBackgroundColor();
@@ -64,6 +68,14 @@ const Notes = () => {
     }
   };
 
+  const fetchNotes = async () => {
+    const data = await getNotesOfSelectedFolder(selectedFolder);
+
+    if (data) {
+      setNotes(data);
+    }
+  };
+
   useEffect(() => {
     if (sidebarFolders.length > 0) {
       setSelectedFolder({
@@ -73,6 +85,16 @@ const Notes = () => {
       });
     }
   }, [sidebarFolders]);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      await fetchNotes();
+    };
+
+    if (selectedFolder !== null) {
+      loadNotes();
+    }
+  }, [selectedFolder]);
 
   const closeAll = () => {
     setModalState((prevState: any) => ({
@@ -229,7 +251,7 @@ const Notes = () => {
 
         {/* Notes Section */}
         {selectedFolder && (
-          <section className="w-full p-30">
+          <section className="flex flex-col justify-center gap-y-20 w-full p-30 pb-0 overflow-hidden">
             <div className="flex flex-col items-center gap-y-20 w-full lg:justify-between lg:flex-row lg:gap-x-12">
               <button
                 className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-red-1 rounded-5 transition-all hover:bg-red-1 hover:border-none active:bg-red-1/75 lg:w-228 lg:h-38"
@@ -273,6 +295,18 @@ const Notes = () => {
                   Create New Note
                 </p>
               </button>
+            </div>
+            <div className="notes-grid gap-20 h-full overflow-y-auto">
+              {notes?.map((note: NoteType) => (
+                <Note
+                  key={note._id}
+                  id={note._id}
+                  title={note.title}
+                  content={note.content}
+                  selectedFolder={selectedFolder}
+                  setNotes={setNotes}
+                />
+              ))}
             </div>
           </section>
         )}

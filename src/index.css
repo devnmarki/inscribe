@@ -23,3 +23,40 @@ body {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
 }
+
+.one-line-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.three-line-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 350px);
+  grid-template-rows: repeat(auto-fill, 181px);
+  margin-bottom: 30px;
+}
+
+@media (max-width: 1024px) {
+  .notes-grid {
+    align-self: center;
+    grid-template-columns: repeat(auto-fit, 310px);
+    justify-content: center;
+    width: 365px;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 1024px) {
+  .note {
+    width: 310px;
+  }
+}

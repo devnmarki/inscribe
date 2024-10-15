@@ -13,6 +13,11 @@ const noteSchema = mongoose.Schema(
     content: {
       type: String,
     },
+    archived: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
     timestamps: true,
