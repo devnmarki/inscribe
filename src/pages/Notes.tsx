@@ -17,6 +17,7 @@ import {
   SidebarFolder,
   Note,
 } from "..";
+import { getNotesOfSelectedFolder, NoteType } from "../data/note.data";
 
 const icons = {
   trashIconRed: "/icons/trash_red_icon.svg",
@@ -40,6 +41,8 @@ const Notes = () => {
 
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
+
+  const [notes, setNotes] = useState<NoteType[] | undefined>([]);
 
   useEffect(() => {
     setBackgroundColor();
@@ -65,6 +68,14 @@ const Notes = () => {
     }
   };
 
+  const fetchNotes = async () => {
+    const data = await getNotesOfSelectedFolder(selectedFolder);
+
+    if (data) {
+      setNotes(data);
+    }
+  };
+
   useEffect(() => {
     if (sidebarFolders.length > 0) {
       setSelectedFolder({
@@ -74,6 +85,16 @@ const Notes = () => {
       });
     }
   }, [sidebarFolders]);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      await fetchNotes();
+    };
+
+    if (selectedFolder !== null) {
+      loadNotes();
+    }
+  }, [selectedFolder]);
 
   const closeAll = () => {
     setModalState((prevState: any) => ({
@@ -275,15 +296,15 @@ const Notes = () => {
                 </p>
               </button>
             </div>
-            <div className="notes-grid justify-center gap-20 h-full overflow-y-auto">
-              <Note />
-              <Note />
-              <Note />
-              <Note />
-              <Note />
-              <Note />
-              <Note />
-              <Note />
+            <div className="notes-grid gap-20 h-full overflow-y-auto">
+              {notes?.map((note: NoteType) => (
+                <Note
+                  key={note._id}
+                  id={note._id}
+                  title={note.title}
+                  content={note.content}
+                />
+              ))}
             </div>
           </section>
         )}
