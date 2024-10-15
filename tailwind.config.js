@@ -19,12 +19,15 @@ export default {
       },
       height: {
         294: "294px",
+        290: "290px",
         181: "181px",
+        101: "101px",
         100: "100px",
         80: "80px",
         50: "50px",
         38: "38px",
         35: "35px",
+        14: "14px",
       },
       colors: {
         black: {
@@ -67,6 +70,7 @@ export default {
       fontSize: {
         20: "20px",
         16: "16px",
+        14: "14px",
       },
       gridTemplateColumns: {
         notes: {

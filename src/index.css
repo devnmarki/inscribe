@@ -24,6 +24,13 @@ body {
   -webkit-line-clamp: 1;
 }
 
+.one-line-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
 .three-line-text {
   display: -webkit-box;
   overflow: hidden;

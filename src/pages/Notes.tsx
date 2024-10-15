@@ -303,6 +303,8 @@ const Notes = () => {
                   id={note._id}
                   title={note.title}
                   content={note.content}
+                  selectedFolder={selectedFolder}
+                  setNotes={setNotes}
                 />
               ))}
             </div>
