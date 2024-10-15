@@ -6,6 +6,7 @@ export default {
       width: {
         500: "500px",
         470: "470px",
+        350: "350px",
         310: "310px",
         288: "288px",
         280: "280px",
@@ -17,6 +18,7 @@ export default {
         "45c": "45ch",
       },
       height: {
+        181: "181px",
         100: "100px",
         80: "80px",
         50: "50px",
@@ -64,6 +66,11 @@ export default {
       fontSize: {
         20: "20px",
         16: "16px",
+      },
+      gridTemplateColumns: {
+        notes: {
+          3: "repeat(3, minmax(0px, 350px))",
+        },
       },
     },
   },
