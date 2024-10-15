@@ -18,6 +18,7 @@ export default {
         "45c": "45ch",
       },
       height: {
+        294: "294px",
         181: "181px",
         100: "100px",
         80: "80px",
