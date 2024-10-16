@@ -28,6 +28,28 @@ export const getNotesOfSelectedFolder = async (
   }
 };
 
+export const createNote = async (folderId: string, noteData: NoteType) => {
+  try {
+    const response = await fetch(`${API_URL_BASE}/folders/${folderId}/notes`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(noteData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Could not create note.");
+    }
+
+    let result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const deleteNote = async (noteId: string) => {
   try {
     const response = await fetch(`${API_URL_BASE}/notes/${noteId}`, {

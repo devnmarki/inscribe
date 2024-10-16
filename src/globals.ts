@@ -13,6 +13,7 @@ export const modalsStatesConfig = {
   fade: false,
   createFolderPopup: false,
   deleteFolderPopup: false,
+  createNoteEditor: false,
   noteEditor: false,
 };
 
