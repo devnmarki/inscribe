@@ -66,8 +66,10 @@ export const createNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   const { note_id } = req.params;
 
+  const newNoteData = req.body;
+
   try {
-    const updatedNote = await Note.findByIdAndUpdate(note_id, req.body, {
+    const updatedNote = await Note.findByIdAndUpdate(note_id, newNoteData, {
       new: true,
     });
 
@@ -77,7 +79,7 @@ export const updateNote = async (req, res) => {
       });
     }
 
-    res.status(STATUS_CODES.OK).json({ data: updateNote });
+    res.status(STATUS_CODES.OK).json({ data: updatedNote });
   } catch (e) {
     res.status(STATUS_CODES.SERVER_ERROR).json({ message: e.message });
   }

@@ -1,10 +1,5 @@
-import { Icons, setBackgroundColor } from "../globals";
-import {
-  deleteNote,
-  getNotesOfSelectedFolder,
-  NoteType,
-} from "../data/note.data";
-import { Dispatch, SetStateAction } from "react";
+import { Icons } from "../globals";
+import { deleteNote, getNotesOfSelectedFolder } from "../data/note.data";
 import { FolderType } from "../data/folder.data";
 
 type NoteComponentType = {
@@ -15,6 +10,8 @@ type NoteComponentType = {
   selectedFolder?: FolderType | null;
   setNotes?: any;
 };
+
+// TODO: fix notes deletion when folder is deleted.
 
 const Note = ({
   id = "",
