@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { setBackgroundColor } from "../globals";
+import { modalsStatesConfig, setBackgroundColor } from "../globals";
 import {
   createFolder,
   deleteFolder,
@@ -16,6 +16,7 @@ import {
   Sidebar,
   SidebarFolder,
   Note,
+  NoteEditor,
 } from "..";
 import { getNotesOfSelectedFolder, NoteType } from "../data/note.data";
 
@@ -24,12 +25,6 @@ const icons = {
   trashIconWhite: "/icons/trash_white_icon.svg",
   noteIconBlack: "/icons/notes_icon.svg",
   noteIconWhite: "/icons/notes_white_icon.svg",
-};
-
-const modalsStatesConfig = {
-  fade: false,
-  createFolderPopup: false,
-  deleteFolderPopup: false,
 };
 
 const Notes = () => {
@@ -102,6 +97,7 @@ const Notes = () => {
       fade: false,
       deleteFolderPopup: false,
       createFolderPopup: false,
+      noteEditor: false,
     }));
   };
 
@@ -123,14 +119,18 @@ const Notes = () => {
       name: newFolderName,
     };
 
+    if (!loggedInUser._id) return;
+
     await createFolder(loggedInUser._id, data);
     await loadFolders();
+
     closeAll();
   };
 
   return (
     <>
       {modalState.fade && <Fade />}
+
       {modalState.createFolderPopup && (
         <Modal>
           <div className="flex justify-center items-center w-full h-full">
@@ -199,6 +199,8 @@ const Notes = () => {
           </div>
         </Modal>
       )}
+
+      {modalState.noteEditor && <NoteEditor closeAll={closeAll} />}
 
       <NavigationBar
         setToggleSidebar={setToggleSidebar}
@@ -280,7 +282,16 @@ const Notes = () => {
                 </p>
               </button>
 
-              <button className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75 lg:w-228 lg:h-38">
+              <button
+                className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75 lg:w-228 lg:h-38"
+                onClick={() => {
+                  setModalState((prevState: any) => ({
+                    ...prevState,
+                    fade: true,
+                    noteEditor: true,
+                  }));
+                }}
+              >
                 <img
                   src={icons.noteIconBlack}
                   alt="Black Icon"
