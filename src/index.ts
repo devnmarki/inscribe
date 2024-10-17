@@ -9,7 +9,9 @@ export { default as SidebarItem } from "./components/sections/sidebar/SidebarIte
 export { default as SidebarFolder } from "./components/sections/sidebar/SidebarFolder";
 export { default as SidebarDropdown } from "./components/sections/sidebar/SidebarDropdown";
 export { default as CustomInput } from "./components/ui/CustomInput";
+export { default as CustomTextField } from "./components/ui/CustomTextField";
 export { default as Fade } from "./components/ui/Fade";
 export { default as Profile } from "./components/ui/Profile";
 export { default as EditableTextField } from "./components/ui/EditableTextField";
 export { default as Note } from "./components/Note";
+export { default as NoteEditor } from "./components/NoteEditor";

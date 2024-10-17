@@ -9,10 +9,39 @@ export const Icons = {
   trashRed: "/icons/trash_red_icon.svg",
 };
 
+export const modalsStatesConfig = {
+  fade: false,
+  createFolderPopup: false,
+  deleteFolderPopup: false,
+  createNoteEditor: false,
+  noteEditor: false,
+};
+
 export const setBackgroundColor = () => {
   document.body.style.backgroundColor = "#F5F5F5";
 
   return () => {
     document.body.style.backgroundColor = "";
   };
+};
+
+export const shortenUrl = async (url: string) => {
+  try {
+    const response = await fetch("https://api-ssl.bitly.com/v4/shorten", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer 26e41e4a35b621fea9683776ffe8250d0aa6a086",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        long_url: url,
+      }),
+    });
+
+    const result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
 };

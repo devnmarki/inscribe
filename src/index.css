@@ -38,6 +38,13 @@ body {
   -webkit-line-clamp: 3;
 }
 
+.background-image {
+  background-image: url("/images/proffesional_man_colorful.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, 350px);

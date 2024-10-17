@@ -1,5 +1,5 @@
-import { FormEvent, useEffect, useState } from "react";
-import { setBackgroundColor } from "../globals";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { modalsStatesConfig, setBackgroundColor } from "../globals";
 import {
   createFolder,
   deleteFolder,
@@ -16,20 +16,20 @@ import {
   Sidebar,
   SidebarFolder,
   Note,
+  NoteEditor,
 } from "..";
-import { getNotesOfSelectedFolder, NoteType } from "../data/note.data";
+import {
+  createNote,
+  getNotesOfSelectedFolder,
+  NoteType,
+  updateNote,
+} from "../data/note.data";
 
 const icons = {
   trashIconRed: "/icons/trash_red_icon.svg",
   trashIconWhite: "/icons/trash_white_icon.svg",
   noteIconBlack: "/icons/notes_icon.svg",
   noteIconWhite: "/icons/notes_white_icon.svg",
-};
-
-const modalsStatesConfig = {
-  fade: false,
-  createFolderPopup: false,
-  deleteFolderPopup: false,
 };
 
 const Notes = () => {
@@ -42,7 +42,23 @@ const Notes = () => {
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
 
+  const [newNoteTitle, setNewNoteTitle] = useState<string>("");
+  const [newNoteTitleError, setNewNoteTitleError] = useState<string>("");
+  const [newNoteContent, setNewNoteContent] = useState<string>("");
+  const [newNoteContentError, setNewNoteContentError] = useState<string>("");
+
   const [notes, setNotes] = useState<NoteType[] | undefined>([]);
+
+  const [currentNote, setCurrentNote] = useState<NoteType | null>(null);
+
+  const [updatedNoteTitle, setUpdatedNoteTitle] = useState<string | undefined>(
+    currentNote?.title,
+  );
+  const [updatedNoteContent, setUpdatedNoteContent] = useState<
+    string | undefined
+  >(currentNote?.content);
+  const [updatedNoteTitleError, setUpdatedNoteTitleError] =
+    useState<string>("");
 
   useEffect(() => {
     setBackgroundColor();
@@ -102,7 +118,16 @@ const Notes = () => {
       fade: false,
       deleteFolderPopup: false,
       createFolderPopup: false,
+      createNoteEditor: false,
+      noteEditor: false,
     }));
+
+    setNewNoteTitle("");
+    setNewNoteContent("");
+
+    setNewNoteTitleError("");
+    setNewNoteContentError("");
+    setUpdatedNoteTitleError("");
   };
 
   const createNewFolder = async (e: FormEvent) => {
@@ -123,14 +148,18 @@ const Notes = () => {
       name: newFolderName,
     };
 
+    if (!loggedInUser._id) return;
+
     await createFolder(loggedInUser._id, data);
     await loadFolders();
+
     closeAll();
   };
 
   return (
     <>
       {modalState.fade && <Fade />}
+
       {modalState.createFolderPopup && (
         <Modal>
           <div className="flex justify-center items-center w-full h-full">
@@ -198,6 +227,88 @@ const Notes = () => {
             </div>
           </div>
         </Modal>
+      )}
+
+      {modalState.noteEditor && (
+        <NoteEditor
+          closeAll={closeAll}
+          onTitleChange={(e: any) => setUpdatedNoteTitle(e.target.value)}
+          onContentChange={(e: any) => setUpdatedNoteContent(e.target.value)}
+          onSave={async (e: FormEvent) => {
+            e.preventDefault();
+
+            if (!currentNote?._id) return;
+
+            if (updatedNoteTitle?.length === 0) {
+              setUpdatedNoteTitleError("Note title is required");
+              return;
+            }
+
+            await updateNote(currentNote?._id, {
+              title: updatedNoteTitle,
+              content: updatedNoteContent,
+            });
+            await fetchNotes();
+
+            closeAll();
+          }}
+          titleValue={currentNote?.title}
+          contentValue={currentNote?.content}
+          titleErrorMessage={updatedNoteTitleError}
+        />
+      )}
+
+      {/* Create Note */}
+      {modalState.createNoteEditor && (
+        <NoteEditor
+          closeAll={closeAll}
+          onTitleChange={(e: any) => setNewNoteTitle(e.target.value)}
+          onContentChange={(e: any) => setNewNoteContent(e.target.value)}
+          onSave={async (e: FormEvent) => {
+            e.preventDefault();
+
+            setNewNoteTitleError("");
+            setNewNoteContentError("");
+
+            if (!selectedFolder?._id) return;
+
+            const createdDate = new Date();
+
+            const monthName = createdDate.toLocaleString("default", {
+              month: "long",
+            });
+
+            let data = {
+              folder_id: selectedFolder._id,
+              title: newNoteTitle,
+              content: newNoteContent,
+              date: `${createdDate.getDate()} ${monthName}, ${createdDate.getFullYear()}`,
+            };
+
+            await createNote(selectedFolder._id, data);
+            await fetchNotes();
+
+            if (newNoteTitle.length === 0) {
+              setNewNoteTitleError("Please enter title");
+              return;
+            } else if (newNoteContent.length === 0) {
+              setNewNoteContentError("Please enter content of your note");
+              return;
+            }
+
+            console.log(
+              createdDate.getDate() +
+                " " +
+                monthName +
+                ", " +
+                createdDate.getFullYear(),
+            );
+
+            closeAll();
+          }}
+          titleErrorMessage={newNoteTitleError}
+          contentErrorMessage={newNoteContentError}
+        />
       )}
 
       <NavigationBar
@@ -280,7 +391,16 @@ const Notes = () => {
                 </p>
               </button>
 
-              <button className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75 lg:w-228 lg:h-38">
+              <button
+                className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75 lg:w-228 lg:h-38"
+                onClick={() => {
+                  setModalState((prevState: any) => ({
+                    ...prevState,
+                    fade: true,
+                    createNoteEditor: true,
+                  }));
+                }}
+              >
                 <img
                   src={icons.noteIconBlack}
                   alt="Black Icon"
@@ -297,14 +417,17 @@ const Notes = () => {
               </button>
             </div>
             <div className="notes-grid gap-20 h-full overflow-y-auto">
-              {notes?.map((note: NoteType) => (
+              {notes?.map((note: NoteType, index) => (
                 <Note
-                  key={note._id}
+                  key={note._id || index}
                   id={note._id}
                   title={note.title}
                   content={note.content}
+                  date={note.date}
                   selectedFolder={selectedFolder}
                   setNotes={setNotes}
+                  setModalState={setModalState}
+                  setCurrentNote={setCurrentNote}
                 />
               ))}
             </div>
