@@ -28,6 +28,22 @@ export const getNotesOfSelectedFolder = async (
   }
 };
 
+export const getNote = async (noteId: string) => {
+  try {
+    const response = await fetch(`${API_URL_BASE}/notes/${noteId}`);
+
+    if (!response.ok) {
+      throw new Error("Failed to get nores of selected folder.");
+    }
+
+    let result = (await response.json()) as NoteType;
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const createNote = async (folderId: string, noteData: NoteType) => {
   try {
     const response = await fetch(`${API_URL_BASE}/folders/${folderId}/notes`, {
@@ -40,6 +56,28 @@ export const createNote = async (folderId: string, noteData: NoteType) => {
 
     if (!response.ok) {
       throw new Error("Could not create note.");
+    }
+
+    let result = await response.json();
+
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const updateNote = async (noteId: string, updatedData: NoteType) => {
+  try {
+    const response = await fetch(`${API_URL_BASE}/notes/${noteId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Could not update note.");
     }
 
     let result = await response.json();

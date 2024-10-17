@@ -7,6 +7,7 @@ type CustomInputType = {
   errorMessage?: string;
   width?: number;
   fullWidth?: boolean;
+  value?: string;
 };
 
 const CustomInput = (props: CustomInputType) => {
@@ -22,6 +23,7 @@ const CustomInput = (props: CustomInputType) => {
         placeholder={props.placeholder}
         onChange={props.onChange}
         style={style}
+        defaultValue={props.value}
       />
       {props.errorMessage && (
         <p className="text-rose-600">{props.errorMessage}</p>

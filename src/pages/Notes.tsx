@@ -22,6 +22,7 @@ import {
   createNote,
   getNotesOfSelectedFolder,
   NoteType,
+  updateNote,
 } from "../data/note.data";
 
 const icons = {
@@ -47,6 +48,17 @@ const Notes = () => {
   const [newNoteContentError, setNewNoteContentError] = useState<string>("");
 
   const [notes, setNotes] = useState<NoteType[] | undefined>([]);
+
+  const [currentNote, setCurrentNote] = useState<NoteType | null>(null);
+
+  const [updatedNoteTitle, setUpdatedNoteTitle] = useState<string | undefined>(
+    currentNote?.title,
+  );
+  const [updatedNoteContent, setUpdatedNoteContent] = useState<
+    string | undefined
+  >(currentNote?.content);
+  const [updatedNoteTitleError, setUpdatedNoteTitleError] =
+    useState<string>("");
 
   useEffect(() => {
     setBackgroundColor();
@@ -115,6 +127,7 @@ const Notes = () => {
 
     setNewNoteTitleError("");
     setNewNoteContentError("");
+    setUpdatedNoteTitleError("");
   };
 
   const createNewFolder = async (e: FormEvent) => {
@@ -216,7 +229,36 @@ const Notes = () => {
         </Modal>
       )}
 
-      {modalState.noteEditor && <NoteEditor closeAll={closeAll} />}
+      {modalState.noteEditor && (
+        <NoteEditor
+          closeAll={closeAll}
+          onTitleChange={(e: any) => setUpdatedNoteTitle(e.target.value)}
+          onContentChange={(e: any) => setUpdatedNoteContent(e.target.value)}
+          onSave={async (e: FormEvent) => {
+            e.preventDefault();
+
+            if (!currentNote?._id) return;
+
+            if (updatedNoteTitle?.length === 0) {
+              setUpdatedNoteTitleError("Note title is required");
+              return;
+            }
+
+            await updateNote(currentNote?._id, {
+              title: updatedNoteTitle,
+              content: updatedNoteContent,
+            });
+            await fetchNotes();
+
+            closeAll();
+          }}
+          titleValue={currentNote?.title}
+          contentValue={currentNote?.content}
+          titleErrorMessage={updatedNoteTitleError}
+        />
+      )}
+
+      {/* Create Note */}
       {modalState.createNoteEditor && (
         <NoteEditor
           closeAll={closeAll}
@@ -360,15 +402,16 @@ const Notes = () => {
               </button>
             </div>
             <div className="notes-grid gap-20 h-full overflow-y-auto">
-              {notes?.map((note: NoteType) => (
+              {notes?.map((note: NoteType, index) => (
                 <Note
-                  key={note._id}
+                  key={note._id || index}
                   id={note._id}
                   title={note.title}
                   content={note.content}
                   selectedFolder={selectedFolder}
                   setNotes={setNotes}
                   setModalState={setModalState}
+                  setCurrentNote={setCurrentNote}
                 />
               ))}
             </div>

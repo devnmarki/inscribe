@@ -4,6 +4,8 @@ import { CustomInput, CustomTextField, Modal } from "..";
 type NoteEditorComponent = {
   closeAll: any;
   onSave?: any;
+  titleValue?: string;
+  contentValue?: string;
   onTitleChange?: any;
   onContentChange?: any;
   titleErrorMessage?: string;
@@ -13,6 +15,8 @@ type NoteEditorComponent = {
 const NoteEditor: FC<NoteEditorComponent> = ({
   closeAll,
   onSave,
+  titleValue,
+  contentValue,
   onTitleChange,
   onContentChange,
   titleErrorMessage,
@@ -38,12 +42,14 @@ const NoteEditor: FC<NoteEditorComponent> = ({
               fullWidth={true}
               onChange={onTitleChange}
               errorMessage={titleErrorMessage}
+              value={titleValue}
             />
             <CustomTextField
               placeholder="Note Content..."
               fullWidth={true}
               onChange={onContentChange}
               errorMessage={contentErrorMessage}
+              value={contentValue}
             />
             <button className="w-full h-50 bg-black-1 rounded-5 text-white-1 transition-colors hover:bg-black-1/75">
               Save
