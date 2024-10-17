@@ -272,10 +272,17 @@ const Notes = () => {
 
             if (!selectedFolder?._id) return;
 
+            const createdDate = new Date();
+
+            const monthName = createdDate.toLocaleString("default", {
+              month: "long",
+            });
+
             let data = {
               folder_id: selectedFolder._id,
               title: newNoteTitle,
               content: newNoteContent,
+              date: `${createdDate.getDate()} ${monthName}, ${createdDate.getFullYear()}`,
             };
 
             await createNote(selectedFolder._id, data);
@@ -288,6 +295,14 @@ const Notes = () => {
               setNewNoteContentError("Please enter content of your note");
               return;
             }
+
+            console.log(
+              createdDate.getDate() +
+                " " +
+                monthName +
+                ", " +
+                createdDate.getFullYear(),
+            );
 
             closeAll();
           }}
@@ -408,6 +423,7 @@ const Notes = () => {
                   id={note._id}
                   title={note.title}
                   content={note.content}
+                  date={note.date}
                   selectedFolder={selectedFolder}
                   setNotes={setNotes}
                   setModalState={setModalState}

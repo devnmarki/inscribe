@@ -22,7 +22,7 @@ const Note = ({
   id = "",
   title = "",
   content = "",
-  date = "4 October, 2024",
+  date = "",
   selectedFolder,
   setNotes,
   setModalState,
