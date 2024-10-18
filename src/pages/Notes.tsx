@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { modalsStatesConfig, setBackgroundColor } from "../globals";
 import {
   createFolder,
@@ -32,23 +32,27 @@ const icons = {
   noteIconWhite: "/icons/notes_white_icon.svg",
 };
 
+const initialNewNotConfig = {
+  title: "",
+  titleError: "",
+  content: "",
+};
+
 const Notes = () => {
   const [toggleSidebar, setToggleSidebar] = useState<boolean>(false);
-  const [modalState, setModalState] = useState<any>({ ...modalsStatesConfig });
-  const [sidebarFolders, setSidebarFolders] = useState<FolderType[]>([]);
 
+  const [modalStates, setModalStates] = useState<{ [key: string]: boolean }>({
+    ...modalsStatesConfig,
+  });
+
+  const [sidebarFolders, setSidebarFolders] = useState<FolderType[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<FolderType | null>(null);
 
   const [newFolderName, setNewFolderName] = useState<string>("");
   const [newFolderNameError, setNewFolderNameError] = useState<string>("");
 
-  const [newNoteTitle, setNewNoteTitle] = useState<string>("");
-  const [newNoteTitleError, setNewNoteTitleError] = useState<string>("");
-  const [newNoteContent, setNewNoteContent] = useState<string>("");
-  const [newNoteContentError, setNewNoteContentError] = useState<string>("");
-
   const [notes, setNotes] = useState<NoteType[] | undefined>([]);
-
+  const [newNoteConfig, setNewNoteConfig] = useState<any>(initialNewNotConfig);
   const [currentNote, setCurrentNote] = useState<NoteType | null>(null);
 
   const [updatedNoteTitle, setUpdatedNoteTitle] = useState<string | undefined>(
@@ -64,33 +68,6 @@ const Notes = () => {
     setBackgroundColor();
     loadFolders();
   }, []);
-
-  const loadFolders = async () => {
-    try {
-      const data = await getFoldersOfLoggedInUser();
-      setSidebarFolders(data);
-
-      if (data[0]) {
-        setSelectedFolder({
-          _id: data[0]?._id,
-          user_id: data[0]?.user_id,
-          name: data[0]?.name,
-        });
-      } else {
-        setSelectedFolder(null);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const fetchNotes = async () => {
-    const data = await getNotesOfSelectedFolder(selectedFolder);
-
-    if (data) {
-      setNotes(data);
-    }
-  };
 
   useEffect(() => {
     if (sidebarFolders.length > 0) {
@@ -112,25 +89,49 @@ const Notes = () => {
     }
   }, [selectedFolder]);
 
+  const loadFolders = async () => {
+    const data = await getFoldersOfLoggedInUser();
+    setSidebarFolders(data);
+
+    if (!data[0]) {
+      setSelectedFolder(null);
+    }
+
+    setSelectedFolder({
+      _id: data[0]._id,
+      user_id: data[0].user_id,
+      name: data[0].name,
+    });
+  };
+
+  const fetchNotes = async () => {
+    const data = await getNotesOfSelectedFolder(selectedFolder);
+
+    if (data) {
+      setNotes(data);
+    }
+  };
+
   const closeAll = () => {
-    setModalState((prevState: any) => ({
-      ...prevState,
-      fade: false,
-      deleteFolderPopup: false,
-      createFolderPopup: false,
-      createNoteEditor: false,
-      noteEditor: false,
+    Object.keys(modalStates).forEach((key) => {
+      modalStates[key] = false;
+      setModalStates((prevState: any) => ({
+        ...prevState,
+        key,
+      }));
+    });
+
+    setNewNoteConfig((prevNoteConfigs: any) => ({
+      ...prevNoteConfigs,
+      title: "",
+      titleError: "",
+      content: "",
     }));
 
-    setNewNoteTitle("");
-    setNewNoteContent("");
-
-    setNewNoteTitleError("");
-    setNewNoteContentError("");
     setUpdatedNoteTitleError("");
   };
 
-  const createNewFolder = async (e: FormEvent) => {
+  const instantiateFolder = async (e: FormEvent) => {
     e.preventDefault();
 
     setNewFolderNameError("");
@@ -156,11 +157,50 @@ const Notes = () => {
     closeAll();
   };
 
+  const handleNoteCreationEditor = async (e: FormEvent) => {
+    e.preventDefault();
+
+    setNewNoteConfig((prevNoteConfig: any) => ({
+      ...prevNoteConfig,
+      titleError: "",
+    }));
+
+    if (!selectedFolder?._id) return;
+
+    const createdDate = new Date();
+
+    const monthName = createdDate.toLocaleString("default", {
+      month: "long",
+    });
+
+    let data = {
+      folder_id: selectedFolder._id,
+      title: newNoteConfig.title,
+      content: newNoteConfig.content,
+      date: `${createdDate.getDate()} ${monthName}, ${createdDate.getFullYear()}`,
+    };
+
+    await createNote(selectedFolder._id, data);
+    await fetchNotes();
+
+    console.log(data);
+
+    if (newNoteConfig.title.length === 0) {
+      setNewNoteConfig((prevNoteConfig: any) => ({
+        ...prevNoteConfig,
+        titleError: "Please enter a title",
+      }));
+      return;
+    }
+
+    closeAll();
+  };
+
   return (
     <>
-      {modalState.fade && <Fade />}
+      {modalStates.fade && <Fade />}
 
-      {modalState.createFolderPopup && (
+      {modalStates.createFolderPopup && (
         <Modal>
           <div className="flex justify-center items-center w-full h-full">
             <div className="flex flex-col gap-y-25 w-310 p-15 bg-white-1 border-1 border-gray-1 rounded-5">
@@ -177,7 +217,7 @@ const Notes = () => {
               </div>
               <form
                 className="flex flex-col gap-y-25"
-                onSubmit={createNewFolder}
+                onSubmit={instantiateFolder}
               >
                 <CustomInput
                   type="text"
@@ -195,7 +235,7 @@ const Notes = () => {
         </Modal>
       )}
 
-      {modalState.deleteFolderPopup && (
+      {modalStates.deleteFolderPopup && (
         <Modal>
           <div className="flex justify-center items-center w-full h-full">
             <div className="flex items-center flex-col gap-y-25 w-310 p-15 bg-white-1 border-1 border-gray-1 rounded-5">
@@ -229,7 +269,7 @@ const Notes = () => {
         </Modal>
       )}
 
-      {modalState.noteEditor && (
+      {modalStates.noteEditor && (
         <NoteEditor
           closeAll={closeAll}
           onTitleChange={(e: any) => setUpdatedNoteTitle(e.target.value)}
@@ -259,68 +299,36 @@ const Notes = () => {
       )}
 
       {/* Create Note */}
-      {modalState.createNoteEditor && (
+      {modalStates.createNoteEditor && (
         <NoteEditor
           closeAll={closeAll}
-          onTitleChange={(e: any) => setNewNoteTitle(e.target.value)}
-          onContentChange={(e: any) => setNewNoteContent(e.target.value)}
-          onSave={async (e: FormEvent) => {
-            e.preventDefault();
-
-            setNewNoteTitleError("");
-            setNewNoteContentError("");
-
-            if (!selectedFolder?._id) return;
-
-            const createdDate = new Date();
-
-            const monthName = createdDate.toLocaleString("default", {
-              month: "long",
-            });
-
-            let data = {
-              folder_id: selectedFolder._id,
-              title: newNoteTitle,
-              content: newNoteContent,
-              date: `${createdDate.getDate()} ${monthName}, ${createdDate.getFullYear()}`,
-            };
-
-            await createNote(selectedFolder._id, data);
-            await fetchNotes();
-
-            if (newNoteTitle.length === 0) {
-              setNewNoteTitleError("Please enter title");
-              return;
-            } else if (newNoteContent.length === 0) {
-              setNewNoteContentError("Please enter content of your note");
-              return;
-            }
-
-            console.log(
-              createdDate.getDate() +
-                " " +
-                monthName +
-                ", " +
-                createdDate.getFullYear(),
-            );
-
-            closeAll();
+          onTitleChange={(e: any) => {
+            setNewNoteConfig((prevNoteConfig: any) => ({
+              ...prevNoteConfig,
+              title: e.target.value,
+            }));
           }}
-          titleErrorMessage={newNoteTitleError}
-          contentErrorMessage={newNoteContentError}
+          onContentChange={(e: any) => {
+            setNewNoteConfig((prevNoteConfig: any) => ({
+              ...prevNoteConfig,
+              content: e.target.value,
+            }));
+          }}
+          onSave={async (e: FormEvent) => await handleNoteCreationEditor(e)}
+          titleErrorMessage={newNoteConfig.titleError}
         />
       )}
 
       <NavigationBar
         setToggleSidebar={setToggleSidebar}
-        setShowFade={setModalState}
+        setShowFade={setModalStates}
       />
       <main className="notes-main w-full flex">
         {/* Sidebar Section */}
         <Sidebar
           toggleSidebar={toggleSidebar}
           setToggleSidebar={setToggleSidebar}
-          setShowFade={setModalState}
+          setShowFade={setModalStates}
           loadFolders={loadFolders}
           sidebarFolders={sidebarFolders.map((folder) => (
             <SidebarFolder
@@ -336,7 +344,7 @@ const Notes = () => {
           <button
             className="group flex justify-center items-center gap-x-10 w-full h-38 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75"
             onClick={() => {
-              setModalState((prevModalState: any) => ({
+              setModalStates((prevModalState: any) => ({
                 ...prevModalState,
                 createFolderPopup: true,
                 fade: true,
@@ -368,7 +376,7 @@ const Notes = () => {
                 className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-red-1 rounded-5 transition-all hover:bg-red-1 hover:border-none active:bg-red-1/75 lg:w-228 lg:h-38"
                 onClick={async () => {
                   if (selectedFolder && selectedFolder._id) {
-                    setModalState((prevState: any) => ({
+                    setModalStates((prevState: any) => ({
                       ...prevState,
                       fade: true,
                       deleteFolderPopup: true,
@@ -394,7 +402,7 @@ const Notes = () => {
               <button
                 className="group flex justify-center items-center gap-x-10 w-310 h-50 border-2 border-black-1 rounded-5 transition-all hover:bg-black-1 hover:border-0 active:bg-black-1/75 lg:w-228 lg:h-38"
                 onClick={() => {
-                  setModalState((prevState: any) => ({
+                  setModalStates((prevState: any) => ({
                     ...prevState,
                     fade: true,
                     createNoteEditor: true,
@@ -426,7 +434,7 @@ const Notes = () => {
                   date={note.date}
                   selectedFolder={selectedFolder}
                   setNotes={setNotes}
-                  setModalState={setModalState}
+                  setModalState={setModalStates}
                   setCurrentNote={setCurrentNote}
                 />
               ))}
