@@ -1,4 +1,5 @@
-export const API_URL_BASE = "http://localhost:5000/api";
+export const API_URL_BASE =
+  "https://api-k64dnhni7-devnmarkis-projects.vercel.app/api";
 
 export const Icons = {
   editGray: "/icons/edit_gray_icon.svg",

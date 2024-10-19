@@ -13,7 +13,12 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: "https://api-k64dnhni7-devnmarkis-projects.vercel.app",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -22,7 +27,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB database"))
   .catch((err) =>
-    console.log("Failed to connect to MongoDB database. Error: " + err),
+    console.log("Failed to connect to MongoDB database. Error: " + err)
   );
 
 app.use("/api", authRoutes);

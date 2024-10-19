@@ -10,7 +10,7 @@ type UserData = {
 
 export const getLoggedInUser = async (): Promise<UserData | null> => {
   try {
-    const response = await fetch("http://localhost:5000/api/auth/user", {
+    const response = await fetch(`${API_URL_BASE}/auth/user`, {
       credentials: "include",
     });
 
@@ -56,7 +56,7 @@ export const updateLoggedInUserData = async (
 
 export const logOutUser = async (navigate: NavigateFunction) => {
   try {
-    const response = await fetch("http://localhost:5000/api/auth/logout", {
+    const response = await fetch(`${API_URL_BASE}/auth/logout`, {
       credentials: "include",
     });
 
