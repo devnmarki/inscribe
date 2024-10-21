@@ -5,6 +5,7 @@ import LogoImage from "/images/logo.svg";
 
 import { handleLoggedInUser } from "../data/user.data.ts";
 import { CustomInput } from "../index.ts";
+import { API_URL_BASE } from "../globals.ts";
 
 const Register = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -31,7 +32,7 @@ const Register = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/signup", {
+      const response = await fetch(`${API_URL_BASE}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

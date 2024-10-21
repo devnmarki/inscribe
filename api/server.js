@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://api-k64dnhni7-devnmarkis-projects.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import FolderIconBlack from "/icons/folder_icon.svg";
 import FolderIconWhite from "/icons/folder_white_icon.svg";
-import { FolderType, updateFolder } from "../../../data/folder.data";
+import { FolderType } from "../../../data/folder.data";
 import { EditableTextField } from "../../..";
 
 type SidebarFolderType = {
